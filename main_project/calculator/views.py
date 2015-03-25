@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from models import Solver
 
 def root(request):
-    return render(request, 'calculator/index.html')
+    solver = Solver()
+    context = {'solver': solver}
+    return render(request, 'calculator/index.html', context)

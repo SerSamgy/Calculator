@@ -9,37 +9,61 @@
 <body>
     <div class="box">
         <div class="display">
-            <input type="text" readonly size="10">
+            <input type="text" readonly size="10" id="d" style="text-align: right;" value="{{ solver.result }}">
         </div>
         <div class="keys">
             <p>
-                <input type="button" value="7" onclick=''>
-                <input type="button" value="8" onclick=''>
-                <input type="button" value="9" onclick=''>
-                <input type="button" value="/" onclick=''>
+                <input type="button" class="digit" value="7">
+                <input type="button" class="digit" value="8">
+                <input type="button" class="digit" value="9">
+                <input type="button" class="sign" value="/">
             </p>
             <p>
-                <input type="button" value="4" onclick=''>
-                <input type="button" value="5" onclick=''>
-                <input type="button" value="6" onclick=''>
-                <input type="button" value="*" onclick=''>
+                <input type="button" class="digit" value="4">
+                <input type="button" class="digit" value="5">
+                <input type="button" class="digit" value="6">
+                <input type="button" class="sign" value="*">
             </p>
             <p>
-                <input type="button" value="1" onclick=''>
-                <input type="button" value="2" onclick=''>
-                <input type="button" value="3" onclick=''>
-                <input type="button" value="-" onclick=''>
+                <input type="button" class="digit" value="1">
+                <input type="button" class="digit" value="2">
+                <input type="button" class="digit" value="3">
+                <input type="button" class="sign" value="-">
             </p>
             <p>
-                <input type="button" value="0" onclick=''>
-                <input type="button" value="." onclick=''>
-                <input type="button" value="C" onclick=''>
-                <input type="button" value="+" onclick=''>
+                <input type="button" class="digit" value="0">
+                <input type="button" class="digit" value=".">
+                <input type="button" value="C" id="c">
+                <input type="button" class="sign" value="+">
             </p>
             <p>
-                <input type="button" value="=" onclick=''>
+                <input type="button" value="=" id="e">
             </p>
         </div>
     </div>
+    <script>
+        function addClickHandlers() {
+            $(".digit").click(function() {
+                var current = $("#d").val();
+                var nu = $(this).val();
+                if (current == "0") $("#d").val(nu);
+                else $("#d").val(current+nu);
+                return false;
+            });
+
+            $(".sign").click(function() {
+                var cur_s = $("#d").val();
+                var nu_s = $(this).val();
+                $("#d").val(cur_s+nu_s);
+                return false;
+            });
+
+            $("#c").click(function() {
+                $("#d").val("0");
+                return false;
+            });
+        }
+        $(document).ready(addClickHandlers);
+    </script>
 </body>
 </html>

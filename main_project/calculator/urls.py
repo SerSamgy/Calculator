@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
-from views import root
+import views
 
 urlpatterns = patterns('',
-    url(r'^$', root, name='root'),
+    url(r'^$', views.root, name='root'),
 )
