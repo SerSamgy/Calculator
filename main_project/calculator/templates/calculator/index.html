@@ -9,7 +9,7 @@
 <body>
     <div class="box">
         <div class="display">
-            <input type="text" readonly size="10" id="d" style="text-align: right;" value="{{ solver.result }}">
+            <input type="text" readonly size="10" id="d" style="text-align: right;" value="0">
         </div>
         <div class="keys">
             <p>
@@ -42,6 +42,11 @@
         </div>
     </div>
     <script>
+        function getResult() {
+            $.getJSON("/get_result/", function(json){
+                $('#d').val(json['result']);
+            });
+        }
         function addClickHandlers() {
             $(".digit").click(function() {
                 var current = $("#d").val();
@@ -63,7 +68,10 @@
                 return false;
             });
         }
-        $(document).ready(addClickHandlers);
+        $(document).ready(function() {
+            addClickHandlers();
+            getResult();
+        });
     </script>
 </body>
 </html>
