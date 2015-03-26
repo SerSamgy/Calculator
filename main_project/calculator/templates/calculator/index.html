@@ -9,7 +9,7 @@
 <body>
     <div class="box">
         <div class="display">
-            <input type="text" readonly size="10" id="d" style="text-align: right;" value="0">
+            <input type="text" readonly size="10" id="d" style="text-align: right;" value="">
         </div>
         <div class="keys">
             <p>
@@ -41,10 +41,13 @@
             </p>
         </div>
     </div>
+    <input type="hidden" value="" id="h">
     <script>
         function getResult() {
             $.getJSON("/api/get_result/", function(json){
-                $('#d').val(json['result']);
+                var json_result = json['result'];
+                $('#d').val(json_result);
+                $('#h').val(json_result);
             });
         }
         function setExpression(data) {
@@ -57,15 +60,20 @@
                 dataType: "json"
             }).success(function(r) {
                 console.log("success", r);
-                if(r["expression"] == r["result"]) $("#d").val(r["result"])
-                else $("#d").val(r["expression"]);
+                $("#d").val(r["result"]);
+                $("#h").val(r["result"]);
                 });
         }
         function addClickHandlers() {
             $(".digit").click(function() {
                 var current = $("#d").val();
+                var hid = $("#h").val();
                 var nu = $(this).val();
-                if (current == "0") $("#d").val(nu);
+                if (current == hid) {
+                    if (nu == ".") nu = "0.";
+                    $("#d").val(nu);
+                    $("#h").val("");
+                }
                 else $("#d").val(current+nu);
                 return false;
             });
@@ -75,7 +83,6 @@
                 var nu_s = $(this).val();
                 var expression = cur_s+nu_s;
                 var ajax_data = {"expression": expression};
-                $("#d").val(expression);
                 setExpression(ajax_data);
                 return false;
             });
@@ -83,6 +90,15 @@
             $("#c").click(function() {
                 var c_data = {"expression": "0", "result": "0"};
                 setExpression(c_data);
+                return false;
+            });
+
+            $("#e").click(function() {
+                var cur_e = $("#d").val();
+                var nu_e = $(this).val();
+                var exp_e = cur_e + nu_e;
+                var ajax_e = {"expression": exp_e};
+                setExpression(ajax_e);
                 return false;
             });
         }
