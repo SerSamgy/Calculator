@@ -4,7 +4,7 @@ from models import Solver
 class SolverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Solver
-        fields = ('expression', 'result')
+        fields = ('id', 'expression', 'result')
 
     def create(self, validated_data):
         """
