@@ -52,15 +52,15 @@
                 type: "POST",
                 url: "/api/set_expression/",
                 data: JSON.stringify(data),
-                success: function(r){ console.log("success", r); $("#d").val(r["result"]);},
                 error: function(r){ console.log(r); },
                 contentType:"application/json",
                 dataType: "json"
-            });
+            }).success(function(r) {
+                console.log("success", r);
+                if(r["expression"] == r["result"]) $("#d").val(r["result"])
+                else $("#d").val(r["expression"]);
+                });
         }
-        $("#d").change(function(){
-            getResult();
-        });
         function addClickHandlers() {
             $(".digit").click(function() {
                 var current = $("#d").val();
@@ -73,7 +73,10 @@
             $(".sign").click(function() {
                 var cur_s = $("#d").val();
                 var nu_s = $(this).val();
-                $("#d").val(cur_s+nu_s).change();
+                var expression = cur_s+nu_s;
+                var ajax_data = {"expression": expression};
+                $("#d").val(expression);
+                setExpression(ajax_data);
                 return false;
             });
 
