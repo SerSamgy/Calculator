@@ -69,17 +69,19 @@
                 var current = $("#d").val();
                 var hid = $("#h").val();
                 var nu = $(this).val();
-                if (current == hid) {
+                if (current == hid && current != "Error") {
                     if (nu == ".") nu = "0.";
                     $("#d").val(nu);
                     $("#h").val("");
                 }
+                else if (current == "Error") {}
                 else $("#d").val(current+nu);
                 return false;
             });
 
             $(".sign").click(function() {
                 var cur_s = $("#d").val();
+                if (cur_s == "Error") {}
                 var nu_s = $(this).val();
                 var expression = cur_s+nu_s;
                 var ajax_data = {"expression": expression};

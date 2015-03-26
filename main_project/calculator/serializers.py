@@ -7,6 +7,12 @@ m_symbol_only = r'^[\/\+\-\*\=]$'
 m_digit_symbol = r'^-?\d+(?:.\d+)?[\/\+\-\*\=]$'
 m_expression = r'^-?\d+(?:.\d+)?[\/\+\-\*]\d+(?:.\d+)?$'
 
+def safe_eval(expression):
+    try:
+        return eval(expression)
+    except Exception:
+        return "Error"
+
 class SolverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Solver
@@ -44,7 +50,7 @@ class SolverSerializer(serializers.ModelSerializer):
             elif re.match(m_digit_symbol, old_expression):  # digit[symbol] in model
                 if new_expression == "=":  # do model expression on itself
                     instance.result = new_result
-                    instance.expression = eval(old_expression + new_result)
+                    instance.expression = safe_eval(old_expression + new_result)
                 else:
                     old_expression[-1] = new_expression
                     instance.expression = old_expression
@@ -52,11 +58,16 @@ class SolverSerializer(serializers.ModelSerializer):
         elif re.match(m_digit_symbol, new_expression):  # digit[symbol] in request
             if re.match(m_digit_symbol, old_expression):  # digit[symbol] in model
                 if new_expression[-1] == "=":  # if last symbol in request is "="
-                    instance.expression = eval(old_expression + new_expression[:-1])
+                    instance.expression = safe_eval(old_expression + new_expression[:-1])
                     instance.result = instance.expression
                 else:
-                    instance.expression = str(eval(old_expression + new_expression[:-1])) + new_expression[-1]
-                    instance.result = instance.expression[:-1]
+                    eval_res = safe_eval(old_expression + new_expression[:-1])
+                    if not isinstance(eval_res, str):
+                        instance.expression = str(eval_res) + new_expression[-1]
+                        instance.result = instance.expression[:-1]
+                    else:
+                        instance.expression = eval_res
+                        instance.result = instance.expression
             else:
                 instance.expression = new_expression
                 instance.result = new_expression[:-1]
