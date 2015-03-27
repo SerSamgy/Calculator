@@ -39,27 +39,11 @@ class SolverSerializer(serializers.ModelSerializer):
         if re.match(m_digit_only, new_expression):
             instance.expression = new_expression
             instance.result = new_result
-        elif re.match(m_symbol_only, new_expression):  # symbol only in request
-            if re.match(m_digit_only, old_expression):  # digit only in model
-                if new_expression == "=":  # stay the same
-                    instance.expression = old_expression
-                    instance.result = new_result
-                else:  # add symbol to digit in model
-                    instance.expression = old_expression + new_expression
-                    instance.result = new_result
-            elif re.match(m_digit_symbol, old_expression):  # digit[symbol] in model
-                if new_expression == "=":  # do model expression on itself
-                    instance.result = new_result
-                    instance.expression = safe_eval(old_expression + new_result)
-                else:
-                    old_expression[-1] = new_expression
-                    instance.expression = old_expression
-                    instance.result = new_result
         elif re.match(m_digit_symbol, new_expression):  # digit[symbol] in request
             if re.match(m_digit_symbol, old_expression):  # digit[symbol] in model
                 if new_expression[-1] == "=":  # if last symbol in request is "="
-                    instance.expression = safe_eval(old_expression + new_expression[:-1])
-                    instance.result = instance.expression
+                    instance.expression = str(safe_eval(old_expression + new_expression[:-1])) + old_expression[-1]
+                    instance.result = instance.expression[:-1]
                 else:
                     eval_res = safe_eval(old_expression + new_expression[:-1])
                     if not isinstance(eval_res, str):
